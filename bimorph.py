@@ -36,13 +36,13 @@ class BimorphClassifier(BaseEstimator, ClassifierMixin):
         temp = tempfile.NamedTemporaryFile(suffix='.sqlite', prefix='', dir='./').name
         if os.path.isfile(temp):
             os.remove(temp)
-        args = ["./bimorph", "-", temp, '-e', str(self.e)]
+        args = ["bimorph", "-", temp, '-e', str(self.e)]
         output, _ = bimorph_exec(args, input=bimorph_json(X,y).encode("utf-8"))
         self.sqlite = temp
         return BimorphClassifier(sqlite=temp, e=self.e, r=self.r)
     
     def predict(self, X:pd.DataFrame):
-        args = ["./bimorph", self.sqlite, "-j", bimorph_json(X)]
+        args = ["bimorph", self.sqlite, "-j", bimorph_json(X)]
         output, err = bimorph_exec(args)
         if len(output) == 0:
             raise ValueError(err)
